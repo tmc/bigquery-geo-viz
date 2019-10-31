@@ -130,7 +130,9 @@ export class MapComponent implements AfterViewInit {
     // Note which types of geometry are being shown.
     this._activeGeometryTypes.clear();
     this._features.forEach((feature) => {
-      this._activeGeometryTypes.add(feature.geometry['type']);
+      if (feature.geometry) {
+        this._activeGeometryTypes.add(feature.geometry['type']);
+      }
     });
 
     // Fit viewport bounds to the data.
@@ -165,7 +167,7 @@ export class MapComponent implements AfterViewInit {
       extruded: false,
       elevationScale: 0,
       lineWidthUnits: 'pixels',
-      pointRadiusMinPixels: 1,
+      pointRadiusMinPixels: 10,
       getFillColor: (d) => {
         let color = this.getStyle(d, this._styles, 'fillColor');
         if (typeof color === 'string') color = color.match(colorRe).slice(1, 4).map(Number);

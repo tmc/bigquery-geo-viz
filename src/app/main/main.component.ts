@@ -41,6 +41,15 @@ import {
 
 const DEBOUNCE_MS = 1000;
 
+const defaultQuery = `SELECT
+namelsad as district_name,
+string_field_1 as lead_1,
+string_field_2 as lead_2,
+ST_AsGeoJson(ST_GeogFromText(geotext)) as geojson
+FROM EXTERNAL_QUERY("tmcdev.us.db-yang", "select gid, statefp, cd116fp, geoid, namelsad, lsad, cdsessn, mtfcc, funcstat, aland, awater, intptlat, intptlon, st_astext(geom) as geotext from congressional_districts where statefp='06';") a
+INNER JOIN \`tmcdev.yangdata.cdls\` b on (b.string_field_0=a.namelsad)
+`;
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -111,8 +120,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
     // Data form group
     this.dataFormGroup = this._formBuilder.group({
-      projectID: ['', Validators.required],
-      sql: ['', Validators.required],
+      projectID: ['tmcdev', Validators.required],
+      sql: [defaultQuery, Validators.required],
       location: [''],
     });
     this.dataFormGroup.controls.projectID.valueChanges.debounceTime(200).subscribe(() => {
@@ -179,7 +188,8 @@ export class MainComponent implements OnInit, OnDestroy {
     const dryRun = this.dataService.prequery(projectID, sql, location)
       .then((response: BigQueryDryRunResponse) => {
         if (!response.ok) throw new Error('Query analysis failed.');
-        const geoColumn = response.schema.fields.find((f) => f.type === 'GEOGRAPHY');
+        const geoColumn = response.schema.fields.find((f) => f.name === 'geojson') || response.schema.fields.find((f) => f.type === 'GEOGRAPHY');
+        console.log(response.schema.fields);
         if (response.statementType !== 'SELECT') {
           throw new Error('Expected a SELECT statement.');
         } else if (!geoColumn) {

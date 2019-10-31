@@ -27,9 +27,9 @@ export interface StyleRule {
 }
 
 const DEFAULT_STYLES = {
-  fillColor: [255, 0, 0],
-  fillOpacity: 1.0,
-  strokeColor: [255, 0, 0],
+  fillColor: [0, 0, 200],
+  fillOpacity: 0.7,
+  strokeColor: [0, 0, 200],
   strokeOpacity: 1.0,
   strokeWeight: 1.0,
   circleRadius: 25

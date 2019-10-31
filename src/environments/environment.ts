@@ -17,5 +17,5 @@
 export const environment = {
   production: false,
   authClientID: '419125973937-kl2cru5pu2vfugne7lr1hosgseh4lo1s.apps.googleusercontent.com',
-  authScope: 'https://www.googleapis.com/auth/bigquery'
+  authScope: 'https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/drive.readonly'
 };

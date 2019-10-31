@@ -31,18 +31,17 @@ export const MAX_RESULTS_PREVIEW = 10;
 // How long to wait for the query to complete, in milliseconds, before the request times out and returns.
 export const TIMEOUT_MS = 120000;
 
-export const SAMPLE_PROJECT_ID = 'google.com:bqmapper';
+export const SAMPLE_PROJECT_ID = 'tmcdev';
 export const SAMPLE_QUERY = `SELECT
-  ST_GeogPoint(longitude, latitude)  AS WKT,
-  status,
-  health,
-  spc_common,
-  user_type,
-  problems,
-  tree_dbh
-FROM \`bigquery-public-data.new_york_trees.tree_census_2015\`
-WHERE status = 'Alive'
-LIMIT 50000;`;
+namelsad as district_name,
+string_field_1 as lead_1,
+string_field_2 as lead_2,
+-- ST_GeogPoint(cast(intptlon as float64),cast(intptlat as float64)) as pt,
+-- ST_AsGeoJson(ST_GeogFromText(geotext)) as geojson
+ST_GeogFromText(geotext) as geojson
+FROM EXTERNAL_QUERY("tmcdev.us.db-yang", "select gid, statefp, cd116fp, geoid, namelsad, lsad, cdsessn, mtfcc, funcstat, aland, awater, intptlat, intptlon, st_astext(geom) as geotext from congressional_districts where statefp='06';") a
+INNER JOIN \`tmcdev.yangdata.cdls\` b on (b.string_field_0=a.namelsad)
+`;
 
 export const SAMPLE_FILL_OPACITY = {isComputed: false, value: 0.8};
 export const SAMPLE_FILL_COLOR = {
